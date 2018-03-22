@@ -53,8 +53,8 @@ public function up(){
 - [x] iblock_type
 - [x] iblock
 - [x] url_rewrite
-- [] iblock_property
-- [] TODO...
+- [ ] iblock_property
+- [ ] TODO...
 
 ## Обертки и параметры
 ### iblock_type
