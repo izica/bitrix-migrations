@@ -9,7 +9,7 @@ $commands = array(
     'migrate'   => 'start migrations',
     'migration' => 'create migration',
     'create'    => 'create migration(same thing as migration)',
-    'seed'      => 'start seeding',
+    // 'seed'      => 'start seeding',
     'rollback'  => 'rollback last migration',
     'reset'     => 'reset migrations'
 );
