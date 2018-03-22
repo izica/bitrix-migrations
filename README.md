@@ -70,6 +70,7 @@ public function up(){
     * NAME(required)
     * CODE(required)
     * IBLOCK_TYPE_ID(required)
+    * CODE_TRANSLIT - true | false - опция автоматической транслитерации имени элемента в код
     * LIST_PAGE_URL
     * DETAIL_PAGE_URL
     * ACTIVE
