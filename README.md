@@ -50,11 +50,11 @@ public function up(){
 ```
 
 ### Доступные обертки
-[x] iblock_type
-[x] iblock
-[x] url_rewrite
-[] iblock_property
-[] TODO
+- [x] iblock_type
+- [x] iblock
+- [x] url_rewrite
+- [] iblock_property
+- [] TODO...
 
 ## Обертки и параметры
 ### iblock_type
