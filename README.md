@@ -56,7 +56,7 @@ public function up(){
 [] iblock_property
 [] TODO
 
-## Параметры
+## Обертки и параметры
 ### iblock_type
 * create(array)
     * ID or CODE(required) - iblock type code
@@ -64,3 +64,26 @@ public function up(){
     * NAME(required)
     * NAME_EN
 * delete(CODE)
+
+### iblock
+* create(array)
+    * NAME(required)
+    * CODE(required)
+    * IBLOCK_TYPE_ID(required)
+    * LIST_PAGE_URL
+    * DETAIL_PAGE_URL
+    * ACTIVE
+    * SITE_ID
+    * SORT       
+    * GROUP_ID
+* delete(CODE)
+
+### url_rewrite
+* create(array)
+    * CONDITION (required)
+    * SITE_ID
+    * PATH
+    * RULE
+* delete(array)
+    * CONDITION (required)
+    * SITE_ID
