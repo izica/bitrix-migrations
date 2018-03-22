@@ -3,6 +3,13 @@
 
 ## Установка
 Скопировать в нужный проект, рекомендуемое место установки '/local/migrations';
+В 'config.json' настроить пути;
+```
+{
+    "path": "/local/migrations", //путь от корневой директории
+    "relative": "/../.." //путь до корневой директории
+}
+```
 
 ## Миграции
 ### Команды
@@ -51,6 +58,9 @@ public function up(){
 
 ## Параметры
 ### iblock_type
-*ID or CODE(required) - iblock type code
-*SORT
-*
+* create(array)
+    * ID or CODE(required) - iblock type code
+    * SORT
+    * NAME(required)
+    * NAME_EN
+* delete(CODE)
