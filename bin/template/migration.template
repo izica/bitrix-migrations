@@ -1,0 +1,12 @@
+<?php
+
+class %name% extends MigrationTemplate
+{
+    public function up(){
+
+    }
+
+    public function down(){
+
+    }
+}
