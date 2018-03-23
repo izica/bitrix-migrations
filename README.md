@@ -43,20 +43,23 @@ php bxm create create-news-iblock iblock
 * iblock
 * url_rewrite
 
-### Пример
+### Пример Миграции
 ```php
-public function up(){
-    $this->iblock_type->create([
-        'NAME' => 'Информация',
-        'CODE' => 'information'
-    ]);
+<?php
+class CreateNewsIblock extends MigrationTemplate
+{
+    public function up(){
+        $this->iblock->create([
+            'NAME' => 'Новости',
+            'CODE' => 'news',
+            'IBLOCK_TYPE_ID' => 'information',
+            'CODE_TRANSLIT' => true
+        ]);
+    }
 
-    $this->iblock->create([
-        'NAME' => 'Новости',
-        'CODE' => 'news',
-        'IBLOCK_TYPE_ID' => 'information',
-        'CODE_TRANSLIT' => true
-    ]);
+    public function down(){
+        $this->iblock->delete('news');
+    }
 }
 ```
 
