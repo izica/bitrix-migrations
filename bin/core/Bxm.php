@@ -36,6 +36,6 @@ class Bxm
     }
 
     public static function migration($argv){
-        Migration::create($argv[2]);
+        Migration::create($argv);
     }
 }

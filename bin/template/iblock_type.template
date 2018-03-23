@@ -4,8 +4,9 @@ class %name% extends MigrationTemplate
 {
     public function up(){
         $this->iblock_type->create([
-            'NAME' => 'имя',
-            'CODE' => 'code'
+            'NAME' => 'name',
+            'CODE' => 'code',
+            'NAME_EN' => 'name_en'
         ]);
     }
 

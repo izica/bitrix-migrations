@@ -19,7 +19,7 @@ class Rollback
             ];
         }
 
-        return $result;
+        return array_reverse($result);
     }
 
     public static function getHlBlockId(){

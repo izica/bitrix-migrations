@@ -31,6 +31,15 @@ reset -- reset migrations
 ```
 php bxm create create-news-iblock
 ```
+также доступны шаблоны
+```
+php bxm create create-news-iblock {templateName}
+php bxm create create-news-iblock iblock
+```
+### Доступные шаблоны
+* iblock_type
+* iblock
+* url_rewrite
 
 ### Пример
 ```php

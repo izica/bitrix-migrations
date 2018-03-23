@@ -1,0 +1,23 @@
+<?php
+
+class %name% extends MigrationTemplate
+{
+    public function up(){
+        $this->iblock->create([
+            'ACTIVE'          => 'Y',
+            'NAME'            => 'NAME',
+            'CODE'            => 'CODE',
+            'LIST_PAGE_URL'   => '/',
+            'DETAIL_PAGE_URL' => '/',
+            'IBLOCK_TYPE_ID'  => 'IBLOCK_TYPE_ID',
+            'SITE_ID'         => 's1',
+            'SORT'            => 500,
+            'GROUP_ID'        => ['2' => 'R']
+            'CODE_TRANSLIT'   => true
+        ]);
+    }
+
+    public function down(){
+        $this->iblock->delete('code');
+    }
+}

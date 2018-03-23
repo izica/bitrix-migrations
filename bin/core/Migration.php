@@ -68,17 +68,32 @@ class Migration
         }
     }
 
-    public static function create($name){
+    public static function create($argv){
+        $name = $argv[2];
         if(!isset($name) || trim($name) == 'name'){
             echo 'migration name not found';
             die();
         }
+
         $name = preg_replace("/[^ \w]+/", " ", $name);
         $name = str_replace("_", " ", $name);
         $fileName = $_SERVER['MIGRATIONS'] . '/migration/' . time() . '-' . str_replace(" ", "_", $name) . '.php';
         $className = str_replace(" ", "", ucwords(strtolower($name)));
 
-        $content = file_get_contents($_SERVER['MIGRATIONS'] . '/bin/template/migration.template');
+        //try to find MigrationTemplate
+        if(isset($argv[3])){
+            $temlatePath = $_SERVER['MIGRATIONS'] . '/bin/template/' . $argv[3] . '.template';
+            if(file_exists($temlatePath)){
+                echo "Template \033[31m{$argv[3]} \033[0mwas found\n";
+                $content = file_get_contents($temlatePath);
+            }else{
+                echo "Template \033[31m{$argv[3]} \033[0mnot found\n";
+                $content = file_get_contents($_SERVER['MIGRATIONS'] . '/bin/template/migration.template');
+            }
+        }else{
+            $content = file_get_contents($_SERVER['MIGRATIONS'] . '/bin/template/migration.template');
+        }
+
         $content = str_replace("%name%", $className, $content);
         file_put_contents($fileName, $content);
 
