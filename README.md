@@ -41,6 +41,7 @@ php bxm create create-news-iblock iblock
 ### Доступные шаблоны
 * iblock_type
 * iblock
+* iblock_property
 * url_rewrite
 
 ### Пример Миграции
@@ -67,7 +68,7 @@ class CreateNewsIblock extends MigrationTemplate
 - [x] iblock_type
 - [x] iblock
 - [x] url_rewrite
-- [ ] iblock_property
+- [X] iblock_property
 - [ ] TODO...
 
 ## Обертки и параметры
@@ -83,7 +84,7 @@ class CreateNewsIblock extends MigrationTemplate
 * create(array)
     * NAME(required)
     * CODE(required)
-    * IBLOCK_TYPE_ID(required)
+    * IBLOCK_TYPE_CODE(or IBLOCK_TYPE_ID)(required)
     * CODE_TRANSLIT - true | false - опция автоматической транслитерации имени элемента в код
     * LIST_PAGE_URL
     * DETAIL_PAGE_URL
@@ -92,6 +93,26 @@ class CreateNewsIblock extends MigrationTemplate
     * SORT       
     * GROUP_ID
 * delete(CODE)
+
+### iblock_property
+* create(array)
+    * NAME(required)
+    * CODE(required)
+    * IBLOCK_CODE(or IBLOCK_TYPE_ID)(required)
+    * ACTIVE(Y | N)
+    * SORT      
+    * TYPE(STRING | LIST | FILE | RELATION(привязка к элементу))
+    * MULTIPLE(Y | N)
+    * REQUIRED(Y | N)
+    * DESCRIPTION(Y | N)
+    * LINK_IBLOCK_CODE - для типа RELATION
+    * VALUES - массив для типа LIST
+        * VALUE
+        * DEF(Y | N)
+        * SORT
+* delete(array)
+    * IBLOCK_CODE(required)
+    * CODE(required)
 
 ### url_rewrite
 * create(array)

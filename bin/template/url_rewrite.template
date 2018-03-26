@@ -4,15 +4,17 @@ class %name% extends MigrationTemplate
 {
     public function up(){
         $this->url_rewrite->create([
-            "CONDITION" => "#^/news/([0-9a-zA-Z_-]+)#",
-            "PATH" => "/news/detail.php",
-            "RULE" => "SECTION_CODE=$1"
+            'CONDITION' => '#^/news/([0-9a-zA-Z_-]+)#',
+            'PATH'      => '/news/detail.php',
+            'RULE'      => 'SECTION_CODE=$1'
+            'SITE_ID'   => 's1'
         ]);
     }
 
     public function down(){
         $this->url_rewrite->delete([
-            "CONDITION" => "#^/news/([0-9a-zA-Z_-]+)#",
+            'CONDITION' => '#^/news/([0-9a-zA-Z_-]+)#',
+            'SITE_ID'   => 's1'
         ]);
     }
 }

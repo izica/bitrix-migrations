@@ -15,7 +15,7 @@ class Iblock
             'CODE'            => $data['CODE'],
             'LIST_PAGE_URL'   => isset($data['LIST_PAGE_URL']) ? $data['LIST_PAGE_URL'] : '/',
             'DETAIL_PAGE_URL' => isset($data['DETAIL_PAGE_URL']) ? $data['DETAIL_PAGE_URL'] : '/',
-            'IBLOCK_TYPE_ID'  => $data['IBLOCK_TYPE_ID'],
+            'IBLOCK_TYPE_ID'  => isset($data['IBLOCK_TYPE_CODE']) ? $data['IBLOCK_TYPE_CODE'] : $data['IBLOCK_TYPE_ID'],
             'SITE_ID'         => isset($data['SITE_ID']) ? $data['SITE_ID'] : 's1',
             'SORT'            => isset($data['SORT']) ? $data['SORT'] : 500,
             'GROUP_ID'        => isset($data['GROUP_ID']) ? $data['GROUP_ID'] : ['2' => 'R']
@@ -42,7 +42,7 @@ class Iblock
             return $ar_res['ID'];
         } else {
             echo 'IBlock ' . $code . " not found\n";
-            return 0;
+            die();
         }
     }
 

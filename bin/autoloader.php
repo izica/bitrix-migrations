@@ -9,6 +9,7 @@ require_once('core/Rollback.php');
 
 require_once('helpers/IblockType.php');
 require_once('helpers/Iblock.php');
+require_once('helpers/IblockProperty.php');
 require_once('helpers/UrlRewrite.php');
 
 require_once('helpers/MigrationTemplate.php');

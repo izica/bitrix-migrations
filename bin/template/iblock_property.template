@@ -1,0 +1,42 @@
+<?php
+
+class %name% extends MigrationTemplate
+{
+    public function up(){
+        $this->iblock_property->create([
+            'ACTIVE'           => 'Y',
+            'NAME'             => 'NAME',
+            'CODE'             => 'PRICE',
+            'IBLOCK_CODE'      => 'news',
+            'SORT'             => 500,
+            'TYPE'             => 'STRING | LIST | FILE | RELATION',
+            'MULTIPLE'         => 'N',
+            'REQUIRED'         => 'N'
+            'DESCRIPTION'      => 'Y'
+
+            //iblock for type RELATION
+            'LINK_IBLOCK_CODE' => 'events',
+
+            //iblock for type LIST
+            'VALUES'           => [
+                [
+                    'VALUE' => 'Красный',
+                    'DEF'   => 'Y',
+                    'SORT'  => '100'
+                ],
+                [
+                    'VALUE' => 'Желтый',
+                    'DEF'   => 'N',
+                    'SORT'  => '200'
+                ]
+            ]
+        ]);
+    }
+
+    public function down(){
+        $this->iblock_property->delete([
+            'IBLOCK_CODE' => 'news',
+            'CODE'        => 'PRICE'
+        ]);
+    }
+}
