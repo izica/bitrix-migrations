@@ -1,6 +1,6 @@
 <?php
 
-class CreateNewsIblock extends MigrationTemplate
+class CreateNewsIblock extends MigrationAbstract
 {
     public function up(){
         $this->iblock_type->create([

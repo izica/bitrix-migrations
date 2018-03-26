@@ -12,4 +12,4 @@ require_once('helpers/Iblock.php');
 require_once('helpers/IblockProperty.php');
 require_once('helpers/UrlRewrite.php');
 
-require_once('helpers/MigrationTemplate.php');
+require_once('helpers/MigrationAbstract.php');

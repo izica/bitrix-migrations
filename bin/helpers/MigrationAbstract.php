@@ -1,5 +1,5 @@
 <?php
-class MigrationTemplate
+class MigrationAbstract
 {
     public $iblock_type;
     public $iblock;

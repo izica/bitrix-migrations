@@ -1,6 +1,6 @@
 <?php
 
-class %name% extends MigrationTemplate
+class %name% extends MigrationAbstract
 {
     public function up(){
         $this->iblock_type->create([

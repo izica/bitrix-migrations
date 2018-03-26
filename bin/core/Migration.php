@@ -80,7 +80,7 @@ class Migration
         $fileName = $_SERVER['MIGRATIONS'] . '/migration/' . time() . '-' . str_replace(" ", "_", $name) . '.php';
         $className = str_replace(" ", "", ucwords(strtolower($name)));
 
-        //try to find MigrationTemplate
+        //try to find MigrationAbstract
         if(isset($argv[3])){
             $temlatePath = $_SERVER['MIGRATIONS'] . '/bin/template/' . $argv[3] . '.template';
             if(file_exists($temlatePath)){
