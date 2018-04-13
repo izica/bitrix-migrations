@@ -23,31 +23,69 @@ class Iblock
 
         $this->service->Add($arFields);
 
+        if($data['CODE_REQUIRED'] === true){
+            $this->setCodeTransliteration($data['CODE'])->setCodeUnique($data['CODE']);
+        }
+
         if($data['CODE_TRANSLIT'] === true){
-            $this->elementsCodeTransliterationEnable($code);
+            $this->setCodeTransliteration($data['CODE'])->setCodeRequired($data['CODE'])->setCodeUnique($data['CODE']);
         }
     }
 
-    public function elementsCodeTransliterationEnable($code){
-        $iblock_id = $this->find($code);
+    public function setCodeUnique($sIblockCode){
+        $iblock_id = $this->find($sIblockCode);
         $arFields = CIBlock::getFields($iblock_id);
-        $arFields['CODE']['DEFAULT_VALUE']['TRANSLITERATION'] = 'Y';
         $arFields['CODE']['DEFAULT_VALUE']['UNIQUE'] = 'Y';
         CIBlock::setFields($iblock_id, $arFields);
+        return $this;
     }
 
-    public function find($code){
-        $res = CIBlock::GetList(Array(), ['SITE_ID' => SITE_ID, 'CODE' => $code], true);
+    public function setCodeTransliteration($sIblockCode){
+        $iblock_id = $this->find($sIblockCode);
+        $arFields = CIBlock::getFields($iblock_id);
+        $arFields['CODE']['DEFAULT_VALUE']['TRANSLITERATION'] = 'Y';
+        CIBlock::setFields($iblock_id, $arFields);
+        return $this;
+    }
+
+    public function setCodeRequired($sIblockCode){
+        $iblock_id = $this->find($sIblockCode);
+        $arFields = CIBlock::getFields($iblock_id);
+        $arFields['CODE']['IS_REQUIRED'] = 'Y';
+        CIBlock::setFields($iblock_id, $arFields);
+        return $this;
+    }
+
+    public function update($sIblockCode, $arFields){
+        $obRes = CIBlock::GetList(Array(), ['SITE_ID' => SITE_ID, 'CODE' => $sIblockCode], true);
+        if ($arResult = $obRes->Fetch()) {
+            $arIblock = $arResult;
+        }else{
+            echo 'IBlock::update - ' . $sIblockCode . " not found\n";
+            die();
+        }
+
+        foreach ($arFields as $sKey => $sValue) {
+            if(isset($arIblock[$sKey])){
+                $arIblock[$sKey] = $sValue;
+            }
+        }
+
+        $this->service->Update($arIblock['ID'], $arIblock);
+    }
+
+    public function find($sIblockCode){
+        $res = CIBlock::GetList(Array(), ['SITE_ID' => SITE_ID, 'CODE' => $sIblockCode], true);
         if($ar_res = $res->Fetch()) {
             return $ar_res['ID'];
         } else {
-            echo 'IBlock ' . $code . " not found\n";
+            echo 'IBlock ' . $sIblockCode . " not found\n";
             die();
         }
     }
 
-    public function delete($code){
-        $iblock_id = $this->find($code);
+    public function delete($sIblockCode){
+        $iblock_id = $this->find($sIblockCode);
         CIBlock::Delete($iblock_id);
     }
 }

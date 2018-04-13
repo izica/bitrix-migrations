@@ -68,8 +68,9 @@ class CreateNewsIblock extends MigrationTemplate
 - [x] iblock_type
 - [x] iblock
 - [x] url_rewrite
-- [X] iblock_property
-- [ ] TODO...
+- [X] iblock_element_property
+- [X] iblock_section_property
+- [x] iblock_form
 
 ## Обертки и параметры
 ### iblock_type
@@ -85,20 +86,23 @@ class CreateNewsIblock extends MigrationTemplate
     * NAME(required)
     * CODE(required)
     * IBLOCK_TYPE_CODE(or IBLOCK_TYPE_ID)(required)
-    * CODE_TRANSLIT - true | false - опция автоматической транслитерации имени элемента в код
+    * CODE_TRANSLIT - required, unique, translit
     * LIST_PAGE_URL
     * DETAIL_PAGE_URL
     * ACTIVE
     * SITE_ID
     * SORT       
     * GROUP_ID
-* delete(CODE)
+* update(code, array)
+* delete(code)
+* setCodeUnique(code)
+* setCodeTransliteration(code)
+* setCodeTransliteration(code)
 
-### iblock_property
-* create(array)
+### iblock_element_property
+* create(iblock_code, array)
     * NAME(required)
     * CODE(required)
-    * IBLOCK_CODE(or IBLOCK_TYPE_ID)(required)
     * ACTIVE(Y | N)
     * SORT      
     * TYPE(STRING | LIST | FILE | RELATION(привязка к элементу))
@@ -110,9 +114,35 @@ class CreateNewsIblock extends MigrationTemplate
         * VALUE
         * DEF(Y | N)
         * SORT
-* delete(array)
+* update(iblock_code, code, array)
+* delete(iblock_code, code)
     * IBLOCK_CODE(required)
     * CODE(required)
+
+### iblock_section_property
+* create(iblock_code, array)
+    * NAME(required)
+    * CODE(required)
+    * TYPE(STRING)
+* delete(iblock_code, code)
+    * IBLOCK_CODE(required)
+    * CODE(required)
+
+### iblock_form
+* element() - default
+* section() - set settings for sections
+* set(iblock_code, array)
+    * tabs
+    	* rows
+    	
+```
+$this->iblock_form->section()->set($sIblockCode, [
+    'Раздел' => [
+        'Название' => 'NAME',
+        'Название(Англ)' => 'UF_MENU_NAME_EN',
+    ],
+]);
+```
 
 ### url_rewrite
 * create(array)

@@ -82,16 +82,16 @@ class Migration
 
         //try to find MigrationAbstract
         if(isset($argv[3])){
-            $temlatePath = $_SERVER['MIGRATIONS'] . '/bin/template/' . $argv[3] . '.template';
+            $temlatePath = $_SERVER['MIGRATIONS'] . '/templates/' . $argv[3] . '.template';
             if(file_exists($temlatePath)){
                 echo "Template \033[31m{$argv[3]} \033[0mwas found\n";
                 $content = file_get_contents($temlatePath);
             }else{
                 echo "Template \033[31m{$argv[3]} \033[0mnot found\n";
-                $content = file_get_contents($_SERVER['MIGRATIONS'] . '/bin/template/migration.template');
+                $content = file_get_contents($_SERVER['MIGRATIONS'] . '/templates/migration.template');
             }
         }else{
-            $content = file_get_contents($_SERVER['MIGRATIONS'] . '/bin/template/migration.template');
+            $content = file_get_contents($_SERVER['MIGRATIONS'] . '/templates/migration.template');
         }
 
         $content = str_replace("%name%", $className, $content);
