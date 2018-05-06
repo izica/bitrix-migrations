@@ -25,6 +25,7 @@ class IblockElementProperty
             'PROPERTY_TYPE'    => isset($this->property_types[$data['TYPE']]) ? $this->property_types[$data['TYPE']] : 'S',
             'IBLOCK_ID'        => $this->getIblockId($sIblockCode),
             'MULTIPLE'         => isset($data['MULTIPLE']) ? $data['MULTIPLE'] : 'N',
+            'HINT'             => isset($data['HINT']) ? $data['HINT'] : '',
             'IS_REQUIRED'      => isset($data['REQUIRED']) ? $data['REQUIRED'] : 'N',
             'WITH_DESCRIPTION' => isset($data['DESCRIPTION']) ? $data['DESCRIPTION'] : 'N',
         ];
@@ -65,9 +66,25 @@ class IblockElementProperty
     }
 
     public function update($sIblockCode, $sPropertyCode, $arFields){
+        $arData = [];
+        foreach ($arFields as $sKey => $anyValue) {
+            switch ($sKey) {
+                case 'DESCRIPTION':
+                    $arData['WITH_DESCRIPTION'] = $anyValue;
+                    break;
+                case 'REQUIRED':
+                    $arData['IS_REQUIRED'] = $anyValue;
+                    break;
+                case 'TYPE':
+                    $arData['PROPERTY_TYPE'] = isset($this->property_types[$anyValue]) ? $this->property_types[$anyValue] : 'S';
+                    break;
+                default:
+                    $arData[$sKey] = $anyValue;
+            }
+        }
         $this->service->Update(
             $this->getId($sIblockCode, $sPropertyCode),
-            $arFields
+            $arData
         );
     }
 
@@ -101,7 +118,6 @@ class IblockElementProperty
             die();
         }
     }
-
 
     public function delete($sIblockCode, $sPropertyCode){
         $arFilter = [

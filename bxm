@@ -3,7 +3,7 @@ $config = json_decode(file_get_contents('config.json'), true);
 $_SERVER['DOCUMENT_ROOT'] = str_replace("\\", "/", dirname(__FILE__)) . $config['relative'];
 $_SERVER['MIGRATIONS'] = $_SERVER['DOCUMENT_ROOT'] . $config['path'];
 
-require_once($_SERVER['MIGRATIONS'] . '/bin/autoloader.php');
+require_once($_SERVER['MIGRATIONS'] . '/core/autoloader.php');
 
 $commands = array(
     'migrate'   => 'start migrations',

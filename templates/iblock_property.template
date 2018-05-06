@@ -3,7 +3,7 @@
 class %name% extends MigrationAbstract
 {
     public function up(){
-        $this->iblock_property->create([
+        $this->iblock_element_property->create([
             'ACTIVE'           => 'Y',
             'NAME'             => 'NAME',
             'CODE'             => 'PRICE',
@@ -34,7 +34,7 @@ class %name% extends MigrationAbstract
     }
 
     public function down(){
-        $this->iblock_property->delete([
+        $this->iblock_element_property->delete([
             'IBLOCK_CODE' => 'news',
             'CODE'        => 'PRICE'
         ]);

@@ -20,21 +20,21 @@ class IblockForm
         return $this;
     }
 
-    public function set($iblock_code, $data){
-        $iblock_id = $this->find($iblock_code);
+    public function set($sIblockCode, $data){
+        $iblock_id = $this->find($sIblockCode);
         $sName = $this->prefix . $iblock_id;
         CUserOptions::DeleteOptionsByName('form', $sName);
 
         CUserOptions::SetOption(
             'form',
             $sName,
-            ['tabs' => $this->getValue($data)],
+            ['tabs' => $this->getValue($sIblockCode, $data)],
             true,
             0
         );
     }
 
-    public function getValue($tabs){
+    public function getValue($sIblockCode, $tabs){
         $result = [];
         $tabCounter = 0;
         foreach ($tabs as $tabName => $tabItems) {
@@ -42,14 +42,37 @@ class IblockForm
             $result[$tabName] = [
                 '--cedit' . $tabCounter . '--#--' . $tabName . '--'
             ];
-            foreach ($tabItems as $itemName => $itemCode) {
-                $result[$tabName][] = '--' . $itemCode . '--#--' . $itemName . '--';
+            foreach ($tabItems as $sItemName => $sItemCode) {
+                $sItemCode = $this->parseItemCode($sIblockCode, $sItemCode);
+                $result[$tabName][] = '--' . $sItemCode . '--#--' . $sItemName . '--';
             }
             $result[$tabName] = implode(',', $result[$tabName]);
         }
         $result = implode(';', $result);
 
         return substr($result, 2) . ';--';
+    }
+
+    public function parseItemCode($sIblockCode, $sPropertyName){
+        $arPropertyCode = explode('_', $sPropertyName);
+        if(count($arPropertyCode) < 2 || $arPropertyCode[0] != 'PROPERTY'){
+            return $sPropertyName;
+        }
+        unset($arPropertyCode[0]);
+        $sPropertyCode = implode('_', $arPropertyCode);
+
+        $arFilter = [
+            'CODE' => $sPropertyCode,
+            'IBLOCK_CODE' => $sIblockCode
+        ];
+
+        $obProperties = CIBlockProperty::GetList(Array("sort"=>"asc", "name"=>"asc"), $arFilter);
+        if ($arProp = $obProperties->GetNext()){
+            return 'PROPERTY_' . $arProp['ID'];
+        }else{
+            echo 'IBlockProperty ' . $sPropertyName . ' not found\n';
+            die();
+        }
     }
 
     public function find($code){

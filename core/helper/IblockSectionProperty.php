@@ -32,8 +32,17 @@ class IblockSectionProperty
     public function delete($sIblockCode, $sPropertyCode){
         $nIblockId = $this->getIblockId($sIblockCode);
         $sEntityId = "IBLOCK_" . $nIblockId . "_SECTION";
-        
-        $this->service->DropEntity($sEntityId);
+
+        $arFilter = [
+            'ENTITY_ID'  => $sEntityId,
+            'FIELD_NAME' => $sPropertyCode
+        ];
+
+        $rsData = CUserTypeEntity::GetList( array($by=>$order), $arFilter);
+        while($arRes = $rsData->Fetch())
+        {
+            $this->service->Delete($arRes['ID']);
+        }
     }
 
     public function getIblockId($code){
