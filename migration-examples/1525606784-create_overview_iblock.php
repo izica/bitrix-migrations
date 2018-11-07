@@ -1,6 +1,6 @@
 <?php
 
-class CreateOverviewIblock extends MigrationAbstract
+class CreateOverviewIblock extends Migration
 {
     public function up(){
         $sIblockCode = 'overview';

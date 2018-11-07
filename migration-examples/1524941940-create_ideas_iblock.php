@@ -1,6 +1,6 @@
 <?php
 
-class CreateIdeasIblock extends MigrationAbstract
+class CreateIdeasIblock extends Migration
 {
     public function up(){
         $sIblockCode = 'ideas';

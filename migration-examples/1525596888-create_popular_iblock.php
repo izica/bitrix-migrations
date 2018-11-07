@@ -1,6 +1,6 @@
 <?php
 
-class CreatePopularIblock extends MigrationAbstract
+class CreatePopularIblock extends Migration
 {
     public function up(){
         $sIblockCode = 'popular';

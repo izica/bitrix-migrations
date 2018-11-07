@@ -1,6 +1,6 @@
 <?php
 
-class CreateVacanciesIblock extends MigrationAbstract
+class CreateVacanciesIblock extends Migration
 {
     public function up(){
         die();

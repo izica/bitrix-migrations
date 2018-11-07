@@ -1,6 +1,6 @@
 <?php
 
-class IblocksFilesAddDescriptionFields extends MigrationAbstract
+class IblocksFilesAddDescriptionFields extends Migration
 {
     public function up(){
         $this->iblock_element_property->update('employees', 'FILES', [

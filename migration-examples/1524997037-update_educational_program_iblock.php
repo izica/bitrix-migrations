@@ -1,6 +1,6 @@
 <?php
 
-class UpdateEducationalProgramIblock extends MigrationAbstract
+class UpdateEducationalProgramIblock extends Migration
 {
     public function up(){
         $sIblockCode = 'educational-programs';

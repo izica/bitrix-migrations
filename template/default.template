@@ -1,15 +1,14 @@
 <?php
 
-class %name% extends MigrationAbstract
-{
-    public function up(){
+class DD extends Migration {
+    public function up() {
         $this->iblock_type->create([
             'NAME' => 'имя',
             'CODE' => 'code'
         ]);
     }
 
-    public function down(){
+    public function down() {
         $this->iblock->delete('code');
     }
 }

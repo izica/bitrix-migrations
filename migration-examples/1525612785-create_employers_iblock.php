@@ -1,6 +1,6 @@
 <?php
 
-class CreateEmployersIblock extends MigrationAbstract
+class CreateEmployersIblock extends Migration
 {
     public function up(){
         $sIblockCode = 'employers';
