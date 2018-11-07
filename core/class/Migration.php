@@ -11,9 +11,7 @@ class Migration {
     public function __construct() {
         $this->iblock_type = new IblockType();
         $this->iblock = new Iblock();
-        $this->iblock_form = new IblockForm();
         $this->iblock_element_property = new IblockElementProperty();
         $this->iblock_section_property = new IblockSectionProperty();
-        $this->url_rewrite = new UrlRewrite();
     }
 }

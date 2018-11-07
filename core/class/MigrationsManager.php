@@ -110,7 +110,7 @@ class MigrationsManager {
             $fields[] = [
                 'ENTITY_ID'     => 'HLBLOCK_' . $highLoadBlockId,
                 'FIELD_NAME'    => 'UF_TIMESTAMP',
-                'USER_TYPE_ID'  => 'string',
+                'USER_TYPE_ID'  => 'integer',
                 'XML_ID'        => 'UF_TIMESTAMP',
                 'MULTIPLE'      => 'N',
                 'MANDATORY'     => 'Y',
