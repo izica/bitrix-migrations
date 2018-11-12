@@ -1,32 +1,55 @@
 <?php
 
-class IblockType
-{
-    private $service;
+class IBlockType extends Helper {
+    private $arFields = [
+        'SORT' => 500
+    ];
+    private $arRequired = [
+        'ID',
+        'LANG'
+    ];
 
-    public function __construct() {
-        $this->service = new CIBlockType;
+    public function setFields($fields) {
+        $this->arFields = $fields;
+        return $this;
     }
 
-    public function create($data){
-        $arFields = [
-            'ID'       => isset($data['CODE']) ? $data['CODE'] : $data['ID'],
-            'SECTIONS' => 'Y',
-            'IN_RSS'   => 'N',
-            'SORT'     => isset($data['SORT']) ? $data['SORT'] : 500,
-            'LANG'     => [
-                'en' => [
-                    'NAME' => isset($data['NAME_EN']) ? $data['NAME_EN'] : $data['NAME'],
-                ],
-                'ru' => [
-                    'NAME' => isset($data['NAME_RU']) ? $data['NAME_RU'] : $data['NAME'],
-                ]
+    public function setField($key, $value) {
+        $this->arFields[$key] = $value;
+        return $this;
+    }
+
+    public function create() {
+        $this->checkRequired('IBLOCK_TYPE', $this->arRequired, $this->arFields);
+        $obInstance = new CIBlockType;
+        $dbRes = $obInstance->Add($this->arFields);
+        if (!$dbRes) {
+            MigrationLog::add('IBLOCK_TYPE, ' . $this->arFields['ID'], $obInstance->LAST_ERROR);
+            MigrationLog::show(true);
+        } else {
+            MigrationLog::add('OK', "IBlockType " . $this->arFields['ID'] . " was created");
+        }
+    }
+
+    public function delete($id) {
+        MigrationLog::add('OK', "IBlockType " . $id . " was deleted");
+        CIBlockType::Delete($id);
+    }
+
+    public function setId($value) {
+        $this->arFields['ID'] = $value;
+        return $this;
+    }
+
+    public function setName($value) {
+        $this->arFields['LANG'] = [
+            'en' => [
+                'NAME' => $value,
+            ],
+            'ru' => [
+                'NAME' => $value,
             ]
         ];
-        $this->service->Add($arFields);
-    }
-
-    public function delete($code){
-        CIBlockType::Delete($code);
+        return $this;
     }
 }

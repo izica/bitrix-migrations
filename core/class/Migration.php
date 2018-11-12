@@ -1,17 +1,33 @@
 <?php
 
+/**
+ * Class Migration
+ */
 class Migration {
-    public $iblock_type;
-    public $iblock;
-    public $iblock_form;
-    public $iblock_element_property;
-    public $iblock_section_property;
-    public $url_rewrite;
+    /**
+     * @var IBlockType
+     */
+    public $IBlockType;
+    /**
+     * @var IBlock
+     */
+    public $IBlock;
+    /**
+     * @var IBlockElementProperty
+     */
+    public $IBlockElementProperty;
+    /**
+     * @var IBlockSectionProperty
+     */
+    public $IBlockSectionProperty;
 
+    /**
+     * Migration constructor.
+     */
     public function __construct() {
-        $this->iblock_type = new IblockType();
-        $this->iblock = new Iblock();
-        $this->iblock_element_property = new IblockElementProperty();
-        $this->iblock_section_property = new IblockSectionProperty();
+        $this->IBlockType = new IBlockType();
+        $this->IBlock = new IBlock();
+        $this->IBlockElementProperty = new IBlockElementProperty();
+        $this->IBlockSectionProperty = new IBlockSectionProperty();
     }
 }

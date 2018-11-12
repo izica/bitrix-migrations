@@ -6,6 +6,9 @@ class CommandInit extends Command {
 
     public function execute($argv) {
         $sFilename = 'bxm';
+        if(isset($argv[3])){
+            $sFilename = $argv[3];
+        }
         $sDocumentRoot = $this->getDocumentRoot($argv);
 
         $sText = "<?php\n";
@@ -30,11 +33,11 @@ class CommandInit extends Command {
             die();
         }
         if (!is_dir($argv[2])) {
-            echo 'Error[DOCUMENT_ROOT]: directory not found';
+            echo '[DOCUMENT_ROOT] Directory not found';
             die();
         }
         if (!is_dir($argv[2] . '/bitrix')) {
-            echo 'Error[DOCUMENT_ROOT]: bitrix directory not found';
+            echo '[DOCUMENT_ROOT] Bitrix directory not found';
             die();
         }
         return str_replace('\\', '/', $argv[2]);

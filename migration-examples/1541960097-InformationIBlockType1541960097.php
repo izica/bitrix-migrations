@@ -1,6 +1,6 @@
 <?php
 
-class %name% extends Migration {
+class InformationIBlockType1541960097 extends Migration {
     public function up() {
         $this->IBlockType
             ->setId('information')
