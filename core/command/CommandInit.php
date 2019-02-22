@@ -4,86 +4,108 @@ class CommandInit extends Command {
     public $sName = 'init';
     public $sDescription = 'Init migrations module. Example: php /vendor/izica/bitrix-migrations/bxm init';
 
-    public function execute($argv) {
-        $sFilename = 'bxm';
-        if(isset($argv[3])){
-            $sFilename = $argv[3];
-        }
-        $sDocumentRoot = $this->getDocumentRoot($argv);
+    public function execute($arArguments) {
+        $arParams = $this->getParams($arArguments);
+        print_r($arParams);
+        $arParams['--root'] = $this->getDocumentRoot($arParams['--root']);
 
+        $this->createMigrationsDirectories($arParams);
+        $this->createExecFileText($arParams);
+        $this->copyDirectory($this->getScriptDirectory($arParams) . '/template', $arParams['--directory'] . '/template');
+    }
+
+    private function createMigrationsDirectories($arParams) {
+        if (!is_dir($arParams['--directory'])) {
+            mkdir($arParams['--directory']);
+        }
+
+        $sMigration = $this->parseDirPath($arParams['--directory'] . '/migration');
+        if (!is_dir($sMigration)) {
+            mkdir($sMigration);
+        }
+
+        $sTemplate = $this->parseDirPath($arParams['--directory'] . '/template');
+        if (!is_dir($sTemplate)) {
+            mkdir($sTemplate);
+        }
+    }
+
+    private function createExecFileText($arParams) {
+        $sFilename = $this->parseDirPath("{$arParams['--directory']}/{$arParams['--file']}");
         $sText = "<?php\n";
-        $sText .= '$_SERVER["DOCUMENT_ROOT"] = "' . $sDocumentRoot . '";' . "\n";
-        $sText .= 'include "' . $this->getScriptPath() . '";';
-
+        $sText .= '$_SERVER["DOCUMENT_ROOT"] = "../' . $arParams['--root'] . '";' . "\n";
+        $sText .= 'include "../' . $arParams['--script'] . '";';
         file_put_contents($sFilename, $sText);
-
-        $sDirName = $this->getCurrentPath() . 'migration';
-        if (!is_dir($sDirName)) {
-            mkdir($sDirName, 0644);
-        }
-
-        $this->copyDirectory($this->getScriptDirectory() . 'template', $this->getCurrentPath() . 'template');
-
-        echo 'Bitrix migrations initialization done.';
     }
 
-    private function getDocumentRoot($argv) {
-        if (!isset($argv[2])) {
-            echo 'DOCUMENT_ROOT not provided';
+    private function getParams($arArguments) {
+        $arResult = [];
+        foreach ($arArguments as $sArgument) {
+            $arArgument = explode('=', $sArgument);
+            if (count($arArgument) > 1) {
+                $arResult[$arArgument[0]] = $arArgument[1];
+            }
+        }
+        if (!isset($arResult['--file'])) {
+            $arResult['--file'] = 'bxm';
+        }
+        if (!isset($arResult['--directory'])) {
+            $arResult['--directory'] = 'migrations';
+        }
+        if (!isset($arResult['--root'])) {
+            echo '--root argument is required';
             die();
         }
-        if (!is_dir($argv[2])) {
-            echo '[DOCUMENT_ROOT] Directory not found';
+        if (!isset($arResult['--script'])) {
+            $arResult['--script'] = $sTemplate = $this->parseDirPath($arArguments[0]);
+        }
+        return $arResult;
+    }
+
+    private function parseDirPath($sPath) {
+        $sPath = str_replace('\\', '/', $sPath);
+        $sPath = str_replace('//', '/', $sPath);
+        return $sPath;
+    }
+
+    private function getDocumentRoot($sRoot) {
+        if (!is_dir($sRoot)) {
+            echo '[ERROR] DOCUMENT_ROOT directory fail';
             die();
         }
-        if (!is_dir($argv[2] . '/bitrix')) {
-            echo '[DOCUMENT_ROOT] Bitrix directory not found';
+        if (!is_dir($sRoot . '/bitrix')) {
+            echo '[ERROR] DOCUMENT_ROOT directory fail';
             die();
         }
-        return str_replace('\\', '/', $argv[2]);
+        return str_replace('\\', '/', $sRoot);
     }
 
-    private function getCurrentPath() {
-        return getcwd() . '/';
-    }
-
-    private function getScriptPath() {
-        $sPath = $this->getCurrentPath() . $_SERVER['SCRIPT_FILENAME'];
-        return str_replace('\\', '/', $sPath);
-    }
-
-    private function getScriptDirectory() {
-        $sDirectoryPath = $this->getScriptPath();
-        return substr($sDirectoryPath, 0, -7);
+    private function getScriptDirectory($arParams) {
+        $arPath = explode('/', $arParams['--script']);
+        unset($arPath[count($arPath)-1]);
+        return implode('/', $arPath);
     }
 
     private function copyDirectory($source, $dest) {
-        // Check for symlinks
         if (is_link($source)) {
             return symlink(readlink($source), $dest);
         }
 
-        // Simple copy for a file
         if (is_file($source)) {
             return copy($source, $dest);
         }
 
-        // Make destination directory
         if (!is_dir($dest)) {
             mkdir($dest);
         }
-        // Loop through the folder
         $dir = dir($source);
         while (false !== $entry = $dir->read()) {
-            // Skip pointers
             if ($entry == '.' || $entry == '..') {
                 continue;
             }
 
-            // Deep copy directories
             $this->copyDirectory("$source/$entry", "$dest/$entry");
         }
-        // Clean up
         $dir->close();
         return true;
     }
