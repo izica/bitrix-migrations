@@ -1,4 +1,6 @@
 <?php
+namespace Izica;
+
 use Bitrix\Highloadblock\HighloadBlockTable;
 
 class CommandRollback extends Command {

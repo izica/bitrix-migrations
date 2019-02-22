@@ -1,5 +1,8 @@
 <?php
 
+namespace Izica;
+
+
 class Command {
     public $sName = '';
     public $sDescription = '';

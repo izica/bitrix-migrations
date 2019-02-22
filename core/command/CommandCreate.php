@@ -1,4 +1,6 @@
 <?php
+namespace Izica;
+
 
 class CommandCreate extends Command {
     private $nTime = 0;

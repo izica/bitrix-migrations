@@ -1,4 +1,7 @@
 <?php
+namespace Izica;
+
+use CIBlockType;
 
 class IBlockType extends Helper {
     private $arFields = [
@@ -9,13 +12,8 @@ class IBlockType extends Helper {
         'LANG'
     ];
 
-    public function setFields($fields) {
-        $this->arFields = $fields;
-        return $this;
-    }
-
-    public function setField($key, $value) {
-        $this->arFields[$key] = $value;
+    function __construct($arFields) {
+        $this->setFields($arFields);
         return $this;
     }
 
@@ -27,12 +25,12 @@ class IBlockType extends Helper {
             MigrationLog::add('IBLOCK_TYPE, ' . $this->arFields['ID'], $obInstance->LAST_ERROR);
             MigrationLog::show(true);
         } else {
-            MigrationLog::add('OK', "IBlockType " . $this->arFields['ID'] . " was created");
+            MigrationLog::add('OK', "IBlockType " . $this->arFields['ID'] . " created");
         }
     }
 
     public function delete($id) {
-        MigrationLog::add('OK', "IBlockType " . $id . " was deleted");
+        MigrationLog::add('OK', "IBlockType " . $id . " deleted");
         CIBlockType::Delete($id);
     }
 

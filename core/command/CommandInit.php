@@ -1,4 +1,6 @@
 <?php
+namespace Izica;
+
 
 class CommandInit extends Command {
     public $sName = 'init';

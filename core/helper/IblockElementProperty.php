@@ -1,12 +1,14 @@
 <?php
 
-class IBlockElementProperty extends Helper{
+namespace Izica;
+
+class IBlockElementProperty extends Helper {
     private $arFields = [
-        'ACTIVE' => 'Y',
-        'SORT' => 500,
+        'ACTIVE'        => 'Y',
+        'SORT'          => 500,
         'PROPERTY_TYPE' => 'S',
-        'MULTIPLE' => 'N',
-        'IS_REQUIRED' => 'N'
+        'MULTIPLE'      => 'N',
+        'IS_REQUIRED'   => 'N'
     ];
 
     private $arRequired = [
@@ -20,23 +22,18 @@ class IBlockElementProperty extends Helper{
         'IS_REQUIRED'
     ];
 
-    public function setFields($fields) {
-        $this->arFields = $fields;
-        return $this;
-    }
-
-    public function setField($key, $value) {
-        $this->arFields[$key] = $value;
+    function __construct($arFields) {
+        $this->setFields($arFields);
         return $this;
     }
 
     public function create() {
         $this->requiredExtension();
         $this->checkRequired('IBLOCK_ELEMENT_PROPERTY', $this->arRequired, $this->arFields);
-        $obInstance = new CIBlockProperty;
+        $obInstance = new \CIBlockProperty;
         $dbRes = $obInstance->Add($this->arFields);
         if (!$dbRes) {
-            MigrationLog::add('IBLOCK_ELEMENT_PROPERTY, ' . $this->arFields['CODE'], Cutil::translit(
+            MigrationLog::add('IBLOCK_ELEMENT_PROPERTY, ' . $this->arFields['CODE'], \Cutil::translit(
                 str_replace('<br>', '', $obInstance->LAST_ERROR),
                 "ru",
                 [
@@ -52,11 +49,11 @@ class IBlockElementProperty extends Helper{
         return $this;
     }
 
-    public function requiredExtension(){
-        if($this->arFields['PROPERTY_TYPE'] == 'E'){
+    public function requiredExtension() {
+        if ($this->arFields['PROPERTY_TYPE'] == 'E') {
             $this->arRequired[] = 'LINK_IBLOCK_ID';
         }
-        if($this->arFields['PROPERTY_TYPE'] == 'L'){
+        if ($this->arFields['PROPERTY_TYPE'] == 'L') {
             $this->arRequired[] = 'VALUES';
         }
     }
@@ -66,11 +63,11 @@ class IBlockElementProperty extends Helper{
             'IBLOCK_CODE' => $sIblockCode,
             'CODE'        => $sPropertyCode
         ];
-        $dbProperties = CIBlockProperty::GetList(['sort' => 'asc', 'name' => 'asc'], $arFilter);
+        $dbProperties = \CIBlockProperty::GetList(['sort' => 'asc', 'name' => 'asc'], $arFilter);
         if ($arProperty = $dbProperties->GetNext()) {
-            CIBlockProperty::Delete($arProperty['ID']);
+            \CIBlockProperty::Delete($arProperty['ID']);
             MigrationLog::add('OK', "IBlockElementProperty " . $sIblockCode . " was deleted");
-        }else{
+        } else {
             MigrationLog::add('IBLOCK_ELEMENT_PROPERTY', "IBlockElementProperty " . $sIblockCode . '->' . $sIblockCode . " not found");
         }
     }
@@ -115,50 +112,52 @@ class IBlockElementProperty extends Helper{
         return $this;
     }
 
-    public function setIblockLink($sIblockCode){
+    public function setIblockLink($sIblockCode) {
         $this->arFields['LINK_IBLOCK_ID'] = $this->getIblockId($sIblockCode);
         return $this;
     }
 
-    public function setTypeString(){
+    public function setTypeString() {
         $this->arFields['PROPERTY_TYPE'] = 'S';
         return $this;
     }
 
-    public function setTypeLink(){
+    public function setTypeLink() {
         $this->arFields['PROPERTY_TYPE'] = 'E';
         return $this;
     }
 
-    public function setTypeList(){
+    public function setTypeList() {
         $this->arFields['PROPERTY_TYPE'] = 'L';
         return $this;
     }
 
-    public function setListValues($array){
+    public function setListValues($array) {
         $this->arFields['VALUES'] = $array;
         return $this;
     }
 
-    public function setTypeFile(){
+    public function setTypeFile() {
         $this->arFields['PROPERTY_TYPE'] = 'S';
         return $this;
     }
 
-    public function setTypeHtmlEditor(){
+    public function setTypeHtmlEditor() {
         $this->arFields['PROPERTY_TYPE'] = 'S';
         $this->arFields['USER_TYPE'] = 'HTML';
         return $this;
     }
 
-    public function setTypeCheckbox($value = 'Да'){
+    public function setTypeCheckbox($value = 'Да') {
         $this->arFields['LIST_TYPE'] = 'C';
-        $this->arFields['VALUES'] = [[
-           'XML_ID' => 'CHECKED',
-           'DEF'    => 'N',
-           'SORT'   => '500',
-           'VALUE'  => $value
-       ]];
+        $this->arFields['VALUES'] = [
+            [
+                'XML_ID' => 'CHECKED',
+                'DEF'    => 'N',
+                'SORT'   => '500',
+                'VALUE'  => $value
+            ]
+        ];
         return $this;
     }
 }

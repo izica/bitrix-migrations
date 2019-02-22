@@ -1,4 +1,5 @@
 <?php
+use Izica\Migration;
 
 class InformationIBlockType1541960097 extends Migration {
     public function up() {

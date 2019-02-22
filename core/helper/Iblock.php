@@ -1,4 +1,8 @@
 <?php
+namespace Izica;
+
+use CIBlock;
+use CUtil;
 
 class IBlock extends Helper {
     private $arFields = [
@@ -18,13 +22,8 @@ class IBlock extends Helper {
         'GROUP_ID',
     ];
 
-    public function setFields($fields) {
-        $this->arFields = $fields;
-        return $this;
-    }
-
-    public function setField($key, $value) {
-        $this->arFields[$key] = $value;
+    function __construct($arFields) {
+        $this->setFields($arFields);
         return $this;
     }
 
@@ -44,13 +43,13 @@ class IBlock extends Helper {
             ));
             MigrationLog::show(true);
         } else {
-            MigrationLog::add('OK', "IBlockType " . $this->arFields['CODE'] . " was created");
+            MigrationLog::add('OK', "IBlockType " . $this->arFields['CODE'] . " created");
         }
         return $this;
     }
 
     public function delete($iBlockCode) {
-        MigrationLog::add('OK', "IBlock " . $iBlockCode . " was deleted");
+        MigrationLog::add('OK', "IBlock " . $iBlockCode . " deleted");
         CIBlock::Delete($this->getIblockId($iBlockCode));
     }
 

@@ -1,5 +1,7 @@
 <?php
+namespace Izica;
 
+use CModule;
 use Bitrix\Highloadblock\HighloadBlockTable;
 
 class MigrationsManager {
