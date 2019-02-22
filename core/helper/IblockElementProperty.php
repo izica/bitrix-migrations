@@ -1,133 +1,164 @@
 <?php
 
-class IblockElementProperty
-{
-    private $iblock_id = Array();
-    private $service;
-
-    private $property_types = [
-        'STRING'   => 'S',
-        'LIST'     => 'L',
-        'FILE'     => 'F',
-        'RELATION' => 'E'
+class IBlockElementProperty extends Helper{
+    private $arFields = [
+        'ACTIVE' => 'Y',
+        'SORT' => 500,
+        'PROPERTY_TYPE' => 'S',
+        'MULTIPLE' => 'N',
+        'IS_REQUIRED' => 'N'
     ];
 
-    public function __construct() {
-        $this->service = new CIBlockProperty;
-    }
+    private $arRequired = [
+        'NAME',
+        'CODE',
+        'ACTIVE',
+        'PROPERTY_TYPE',
+        'SORT',
+        'IBLOCK_ID',
+        'MULTIPLE',
+        'IS_REQUIRED'
+    ];
 
-    public function create($sIblockCode, $data){
-        $arFields = [
-            'ACTIVE'           => isset($data['ACTIVE']) ? $data['ACTIVE'] : 'Y',
-            'NAME'             => $data['NAME'],
-            'CODE'             => $data['CODE'],
-            'SORT'             => isset($data['SORT']) ? $data['SORT'] : 500,
-            'PROPERTY_TYPE'    => isset($this->property_types[$data['TYPE']]) ? $this->property_types[$data['TYPE']] : 'S',
-            'IBLOCK_ID'        => $this->getIblockId($sIblockCode),
-            'MULTIPLE'         => isset($data['MULTIPLE']) ? $data['MULTIPLE'] : 'N',
-            'HINT'             => isset($data['HINT']) ? $data['HINT'] : '',
-            'IS_REQUIRED'      => isset($data['REQUIRED']) ? $data['REQUIRED'] : 'N',
-            'WITH_DESCRIPTION' => isset($data['DESCRIPTION']) ? $data['DESCRIPTION'] : 'N',
-        ];
-
-        //визуальный редактор
-        if($data['TYPE'] === 'EDITOR'){
-            $arFields['PROPERTY_TYPE'] = 'S';
-            $arFields['USER_TYPE'] = 'HTML';
-        }
-
-        //description field in upload field for file
-        if($data['TYPE'] == 'FILE' && $data['DESCRIPTION'] == 'Y'){
-            CUserOptions::SetOption(
-                'main',
-                'fileinput',
-                [
-                    'mode' => 'mode-file',
-                    'presets' => '',
-                    'pinDescription' => 'Y',
-                ],
-                true,
-                0
-            );
-        }
-
-        //for type RELATION
-        if(isset($data['LINK_IBLOCK_CODE'])){
-            $arFields['LINK_IBLOCK_ID'] = $this->getIblockId($data['LINK_IBLOCK_CODE']);
-        }
-
-        // for type LIST
-        if(isset($data['VALUES'])){
-            $arFields['VALUES'] = $data['VALUES'];
-        }
-
-        $this->service->Add($arFields);
+    public function setFields($fields) {
+        $this->arFields = $fields;
         return $this;
     }
 
-    public function update($sIblockCode, $sPropertyCode, $arFields){
-        $arData = [];
-        foreach ($arFields as $sKey => $anyValue) {
-            switch ($sKey) {
-                case 'DESCRIPTION':
-                    $arData['WITH_DESCRIPTION'] = $anyValue;
-                    break;
-                case 'REQUIRED':
-                    $arData['IS_REQUIRED'] = $anyValue;
-                    break;
-                case 'TYPE':
-                    $arData['PROPERTY_TYPE'] = isset($this->property_types[$anyValue]) ? $this->property_types[$anyValue] : 'S';
-                    break;
-                default:
-                    $arData[$sKey] = $anyValue;
-            }
-        }
-        $this->service->Update(
-            $this->getId($sIblockCode, $sPropertyCode),
-            $arData
-        );
+    public function setField($key, $value) {
+        $this->arFields[$key] = $value;
+        return $this;
     }
 
-    public function getIblockId($code){
-        if(isset($this->iblock_id[$code])){
-            return $this->iblock_id[$code];
-        }
-
-        $res = CIBlock::GetList(Array(), ['SITE_ID' => SITE_ID, 'CODE' => $code], true);
-        if($ar_res = $res->Fetch()) {
-            $this->iblock_id[$code] = $ar_res['ID'];
+    public function create() {
+        $this->requiredExtension();
+        $this->checkRequired('IBLOCK_ELEMENT_PROPERTY', $this->arRequired, $this->arFields);
+        $obInstance = new CIBlockProperty;
+        $dbRes = $obInstance->Add($this->arFields);
+        if (!$dbRes) {
+            MigrationLog::add('IBLOCK_ELEMENT_PROPERTY, ' . $this->arFields['CODE'], Cutil::translit(
+                str_replace('<br>', '', $obInstance->LAST_ERROR),
+                "ru",
+                [
+                    'replace_space' => ' ',
+                    'change_case'   => false,
+                    'replace_other' => false
+                ]
+            ));
+            MigrationLog::show(true);
         } else {
-            echo 'IBlock ' . $code . ' not found\n';
-            die();
+            MigrationLog::add('OK', "IBlockElementProperty " . $this->arFields['CODE'] . " was created");
         }
-
-        return $this->iblock_id[$code];
+        return $this;
     }
 
-    public function getId($sIblockCode, $sPropertyCode){
-        $arFilter = [
-            'CODE' => $sPropertyCode,
-            'IBLOCK_CODE' => $sIblockCode
-        ];
-
-        $obProperties = CIBlockProperty::GetList(Array("sort"=>"asc", "name"=>"asc"), $arFilter);
-        if ($arProp = $obProperties->GetNext()){
-            return $arProp['ID'];
-        }else{
-            echo 'IBlockProperty ' . $sPropertyCode . ' not found\n';
-            die();
+    public function requiredExtension(){
+        if($this->arFields['PROPERTY_TYPE'] == 'E'){
+            $this->arRequired[] = 'LINK_IBLOCK_ID';
+        }
+        if($this->arFields['PROPERTY_TYPE'] == 'L'){
+            $this->arRequired[] = 'VALUES';
         }
     }
 
-    public function delete($sIblockCode, $sPropertyCode){
+    public function delete($sIblockCode, $sPropertyCode) {
         $arFilter = [
             'IBLOCK_CODE' => $sIblockCode,
-            'CODE' => $sPropertyCode
+            'CODE'        => $sPropertyCode
         ];
-        $properties = CIBlockProperty::GetList(Array('sort'=>'asc', 'name'=>'asc'), $arFilter);
-        while ($prop_fields = $properties->GetNext())
-        {
-            CIBlockProperty::Delete($prop_fields['ID']);
+        $dbProperties = CIBlockProperty::GetList(['sort' => 'asc', 'name' => 'asc'], $arFilter);
+        if ($arProperty = $dbProperties->GetNext()) {
+            CIBlockProperty::Delete($arProperty['ID']);
+            MigrationLog::add('OK', "IBlockElementProperty " . $sIblockCode . " was deleted");
+        }else{
+            MigrationLog::add('IBLOCK_ELEMENT_PROPERTY', "IBlockElementProperty " . $sIblockCode . '->' . $sIblockCode . " not found");
         }
+    }
+
+    public function setName($value) {
+        $this->arFields['NAME'] = $value;
+        return $this;
+    }
+
+    public function setActive($value) {
+        $this->arFields['ACTIVE'] = $value;
+        return $this;
+    }
+
+    public function setIBlockCode($value) {
+        $this->arFields['IBLOCK_ID'] = $this->getIblockId($value);
+        return $this;
+    }
+
+    public function setSort($value) {
+        $this->arFields['SORT'] = $value;
+        return $this;
+    }
+
+    public function setRequired($bool = true) {
+        $this->arFields['SORT'] = $bool;
+        return $this;
+    }
+
+    public function setMultiple($bool = true) {
+        $this->arFields['MULTIPLE'] = $bool;
+        return $this;
+    }
+
+    public function setPropertyType($value) {
+        $this->arFields['PROPERTY_TYPE'] = $value;
+        return $this;
+    }
+
+    public function setUserType($value) {
+        $this->arFields['USER_TYPE'] = $value;
+        return $this;
+    }
+
+    public function setIblockLink($sIblockCode){
+        $this->arFields['LINK_IBLOCK_ID'] = $this->getIblockId($sIblockCode);
+        return $this;
+    }
+
+    public function setTypeString(){
+        $this->arFields['PROPERTY_TYPE'] = 'S';
+        return $this;
+    }
+
+    public function setTypeLink(){
+        $this->arFields['PROPERTY_TYPE'] = 'E';
+        return $this;
+    }
+
+    public function setTypeList(){
+        $this->arFields['PROPERTY_TYPE'] = 'L';
+        return $this;
+    }
+
+    public function setListValues($array){
+        $this->arFields['VALUES'] = $array;
+        return $this;
+    }
+
+    public function setTypeFile(){
+        $this->arFields['PROPERTY_TYPE'] = 'S';
+        return $this;
+    }
+
+    public function setTypeHtmlEditor(){
+        $this->arFields['PROPERTY_TYPE'] = 'S';
+        $this->arFields['USER_TYPE'] = 'HTML';
+        return $this;
+    }
+
+    public function setTypeCheckbox($value = 'Да'){
+        $this->arFields['LIST_TYPE'] = 'C';
+        $this->arFields['VALUES'] = [[
+           'XML_ID' => 'CHECKED',
+           'DEF'    => 'N',
+           'SORT'   => '500',
+           'VALUE'  => $value
+       ]];
+        return $this;
     }
 }

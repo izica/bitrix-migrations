@@ -1,6 +1,6 @@
 <?php
 
-class IblockSectionProperty
+class IBlockSectionProperty
 {
     private $service;
 
