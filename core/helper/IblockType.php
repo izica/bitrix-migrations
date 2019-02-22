@@ -17,6 +17,18 @@ class IBlockType extends Helper {
         return $this;
     }
 
+    public function setFields($arFields) {
+        foreach ($arFields as $key => $value){
+            $this->arFields[$key] = $value;
+        }
+        return $this;
+    }
+
+    public function setField($key, $value) {
+        $this->arFields[$key] = $value;
+        return $this;
+    }
+
     public function create() {
         $this->checkRequired('IBLOCK_TYPE', $this->arRequired, $this->arFields);
         $obInstance = new CIBlockType;

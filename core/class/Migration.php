@@ -2,6 +2,8 @@
 
 namespace Izica;
 
+use CIBlock;
+
 /**
  * Class Migration
  * @package Izica

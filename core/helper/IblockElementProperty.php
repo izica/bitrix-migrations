@@ -27,6 +27,18 @@ class IBlockElementProperty extends Helper {
         return $this;
     }
 
+    public function setFields($arFields) {
+        foreach ($arFields as $key => $value){
+            $this->arFields[$key] = $value;
+        }
+        return $this;
+    }
+
+    public function setField($key, $value) {
+        $this->arFields[$key] = $value;
+        return $this;
+    }
+
     public function create() {
         $this->requiredExtension();
         $this->checkRequired('IBLOCK_ELEMENT_PROPERTY', $this->arRequired, $this->arFields);
@@ -84,6 +96,11 @@ class IBlockElementProperty extends Helper {
 
     public function setIBlockCode($value) {
         $this->arFields['IBLOCK_ID'] = $this->getIblockId($value);
+        return $this;
+    }
+
+    public function setCode($value) {
+        $this->arFields['CODE'] = $value;
         return $this;
     }
 
