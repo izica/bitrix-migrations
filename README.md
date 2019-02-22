@@ -21,7 +21,7 @@ composer require izica/bitrix-migrations
   * migration - миграции
   * template - шаблоны
  
-#### Пример запуска из папки local
+#### Пример установки из папки local
 ```
 cd local/php_interface
 composer require izica/bitrix-migrations
@@ -29,7 +29,7 @@ cd ..
 php php_interface/vendor/izica/bitrix-migrations/bxm.php init --root=../
 ```
 
-#### Пример запуска из папки local/php_interface
+#### Пример установки из папки local/php_interface
 ```
 cd local/php_interface
 composer require izica/bitrix-migrations
