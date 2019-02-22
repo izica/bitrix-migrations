@@ -1,8 +1,6 @@
 # Bitrix migrations
 Миграции для CMS 1C Bitrix. Миграции также поддерживают стандартное апи CMS Bitrix
 
-Методы появляются по мере востребованности, если нужно добавить метод, создавайте issue
-
 ## Установка
 ```
 composer require izica/bitrix-migrations
