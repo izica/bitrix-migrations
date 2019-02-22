@@ -23,11 +23,16 @@ composer require izica/bitrix-migrations
  
 #### Пример запуска из папки local
 ```
+cd local/php_interface
+composer require izica/bitrix-migrations
+cd ..
 php php_interface/vendor/izica/bitrix-migrations/bxm.php init --root=../
 ```
 
 #### Пример запуска из папки local/php_interface
 ```
+cd local/php_interface
+composer require izica/bitrix-migrations
 php vendor/izica/bitrix-migrations/bxm.php init --root=../../
 ```
 
