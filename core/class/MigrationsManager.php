@@ -3,6 +3,7 @@ namespace Izica;
 
 use CModule;
 use Bitrix\Highloadblock\HighloadBlockTable;
+use CUserTypeEntity;
 
 class MigrationsManager {
     public static $arCommands = [];
@@ -70,7 +71,6 @@ class MigrationsManager {
             'NAME'       => 'Migrations',
             'TABLE_NAME' => 'migrations',
         ]);
-
         if ($result->isSuccess()) {
             $highLoadBlockId = $result->getId();
             $userTypeEntity = new CUserTypeEntity();
