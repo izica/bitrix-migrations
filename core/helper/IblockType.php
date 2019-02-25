@@ -5,8 +5,10 @@ use CIBlockType;
 
 class IBlockType extends Helper {
     private $arFields = [
-        'SORT' => 500
+        'SORT' => 500,
+        'SECTIONS' => 'Y'
     ];
+
     private $arRequired = [
         'ID',
         'LANG'
