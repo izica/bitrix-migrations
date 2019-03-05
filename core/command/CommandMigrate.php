@@ -1,27 +1,31 @@
 <?php
+
 namespace Izica;
 
 use Bitrix\Highloadblock\HighloadBlockTable;
 
-class CommandMigrate extends Command {
+class CommandMigrate extends Command
+{
     public $sName = 'migrate';
     public $sDescription = 'Start migrations. Example: php bxm migrate';
 
     public $arMigrations = [];
 
-    public function execute($argv) {
+    public function execute($argv)
+    {
         $this->loadMigrations();
         $this->start();
         MigrationLog::add('OK', 'All migrations done');
         MigrationLog::show();
     }
 
-    public function loadMigrations() {
+    public function loadMigrations()
+    {
         $arMigrationsTmp = scandir('migration');
         unset($arMigrationsTmp[0], $arMigrationsTmp[1]);
 
         $arMigrations = [];
-        foreach ($arMigrationsTmp as $sFilename){
+        foreach ($arMigrationsTmp as $sFilename) {
             $arMigrations[$sFilename] = $sFilename;
         }
 
@@ -43,7 +47,8 @@ class CommandMigrate extends Command {
         }
     }
 
-    public static function getHlBlockId() {
+    public static function getHlBlockId()
+    {
         global $DB;
         $results = $DB->Query("SELECT * FROM `b_hlblock_entity`");
 
@@ -54,7 +59,8 @@ class CommandMigrate extends Command {
         }
     }
 
-    public function remember($arMigration) {
+    public function remember($arMigration)
+    {
         $hl_block_id = $this->getHlBlockId();
         $hlblock = HighloadBlockTable::getById($hl_block_id)->fetch();
         $entity = HighloadBlockTable::compileEntity($hlblock);
@@ -64,17 +70,19 @@ class CommandMigrate extends Command {
             'UF_CLASSNAME' => $arMigration['classname'],
             'UF_FILENAME'  => $arMigration['filename'],
             'UF_TIMESTAMP' => $arMigration['timestamp'],
-            'UF_DATE'      => $arMigration['date']
+            'UF_DATE'      => $arMigration['date'],
+            'UF_BUFFER'    => $arMigration['classObject']->getBuffer()
         ]);
 
         MigrationLog::add('OK', "Migration {$arMigration['classname']} done");
     }
 
-    public function start() {
+    public function start()
+    {
         foreach ($this->arMigrations as $arMigration) {
             require_once 'migration/' . $arMigration['filename'];
-            $class = new $arMigration['classname']();
-            $class->up();
+            $arMigration['classObject'] = new $arMigration['classname']();
+            $arMigration['classObject']->up();
             $this->remember($arMigration);
         }
     }

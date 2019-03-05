@@ -11,33 +11,39 @@ class CommandCreate extends Command {
         $this->nTime = time();
         $sClassName = $this->getClassName($argv);
         $sFileName = 'migration/' . $this->nTime . '-' . $sClassName . '.php';
+        $arParams = $this->getParams($argv);
 
-        $sTemplate = $this->getTemplate($argv);
+        $sTemplate = $this->getTemplate($arParams['--template']);
 
-        $sContent = str_replace("%name%", $sClassName, $sTemplate);
+        $sContent = str_replace("__NAME__", $sClassName, $sTemplate);
         file_put_contents($sFileName, $sContent);
 
         MigrationLog::add('OK', "Migration {$sClassName} created");
         MigrationLog::show(true);
     }
 
-    public function getTemplate($argv) {
-        $sDefaultFileName = 'template/default.template';
-        $sTemplateName = 'default';
-        if (isset($argv[3])) {
-            $sFileName = 'template/' . $argv[3] . '.template';
-            if (file_exists($sFileName)) {
-                return file_get_contents($sFileName);
-            } else {
-                MigrationLog::add('TEMPLATE', 'Cant find template ' . $argv[3]);
-                MigrationLog::show(true);
-            }
-        }
-        if (!file_exists($sDefaultFileName)) {
-            MigrationLog::add('TEMPLATE', 'Cant find default template');
+    public function getTemplate($sTemplateName) {
+        $sTemplateFileName = "template/{$sTemplateName}.php";
+
+        if (!file_exists($sTemplateFileName)) {
+            MigrationLog::add('TEMPLATE_NOT_FOUND', "Cant find \"{$sTemplateName}\" template");
             MigrationLog::show(true);
         }
-        return file_get_contents($sDefaultFileName);
+        return file_get_contents($sTemplateFileName);
+    }
+
+    private function getParams($arArguments) {
+        $arResult = [];
+        foreach ($arArguments as $sArgument) {
+            $arArgument = explode('=', $sArgument);
+            if (count($arArgument) > 1) {
+                $arResult[$arArgument[0]] = $arArgument[1];
+            }
+        }
+        if (!isset($arResult['--template'])) {
+            $arResult['--template'] = 'default';
+        }
+        return $arResult;
     }
 
     public function getClassName($argv) {

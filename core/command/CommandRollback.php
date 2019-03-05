@@ -1,14 +1,17 @@
 <?php
+
 namespace Izica;
 
 use Bitrix\Highloadblock\HighloadBlockTable;
 
-class CommandRollback extends Command {
+class CommandRollback extends Command
+{
     public $sName = 'rollback';
     public $sDescription = 'Rollback last migration. Example: php bxm rollback';
     public $arMigration = false;
 
-    public function execute($argv) {
+    public function execute($argv)
+    {
         $this->loadMigrations();
         $this->rollback();
         $this->delete();
@@ -16,7 +19,8 @@ class CommandRollback extends Command {
     }
 
 
-    public function loadMigrations() {
+    public function loadMigrations()
+    {
         global $DB;
         $results = $DB->Query('SELECT * FROM `migrations` ORDER BY UF_TIMESTAMP DESC');
 
@@ -24,15 +28,17 @@ class CommandRollback extends Command {
             $this->arMigration = [
                 'id'        => $row['ID'],
                 'classname' => $row['UF_CLASSNAME'],
-                'filename'  => $row['UF_FILENAME']
+                'filename'  => $row['UF_FILENAME'],
+                'buffer'    => $row['UF_BUFFER'],
             ];
-        }else{
+        } else {
             MigrationLog::add('ROLLBACK', 'Migrations not found');
             MigrationLog::show(true);
         }
     }
 
-    public function getHlBlockId() {
+    public function getHlBlockId()
+    {
         global $DB;
         $results = $DB->Query("SELECT * FROM `b_hlblock_entity`");
 
@@ -43,7 +49,8 @@ class CommandRollback extends Command {
         }
     }
 
-    public function delete() {
+    public function delete()
+    {
         $hl_block_id = $this->getHlBlockId();
         $hlblock = HighloadBlockTable::getById($hl_block_id)->fetch();
         $entity = HighloadBlockTable::compileEntity($hlblock);
@@ -53,9 +60,11 @@ class CommandRollback extends Command {
         MigrationLog::add('OK', "Migration {$this->arMigration['classname']} rollbacked\n");
     }
 
-    public function rollback() {
+    public function rollback()
+    {
         require_once 'migration/' . $this->arMigration['filename'];
         $class = new $this->arMigration['classname']();
+        $class->setBuffer($arMigration['buffer']);
         $class->down();
     }
 }

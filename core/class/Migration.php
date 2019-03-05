@@ -8,36 +8,62 @@ use CIBlock;
  * Class Migration
  * @package Izica
  */
-class Migration {
+class Migration
+{
     /**
-     * @param array $arFields
-     * @return IBlockType
+     * @var array
      */
-    public function iblockType($arFields = []) {
-        return new IBlockType($arFields);
+    public $arBuffer = [];
+
+    /**
+     * @param $message
+     * @param string $code
+     */
+    public function log($message, $code = 'MIGRATION_LOG')
+    {
+        MigrationLog::add($code, $message);
     }
 
     /**
-     * @param array $arFields
-     * @return IBlock
+     * @param $key
+     * @param $value
      */
-    public function iblock($arFields = []) {
-        return new IBlock($arFields);
+    public function set($key, $value)
+    {
+        $this->arBuffer[$key] = json_encode($value);
     }
 
     /**
-     * @param array $arFields
-     * @return IBlockElementProperty
+     * @param $key
+     * @return mixed
      */
-    public function iblockElementProperty($arFields = []) {
-        return new IBlockElementProperty($arFields);
+    public function get($key)
+    {
+        return json_decode($this->arBuffer[$key], true);
+    }
+
+    /**
+     * @return false|string
+     */
+    public function getBuffer()
+    {
+        return json_encode($this->arBuffer);
+    }
+
+    /**
+     * @param $arBuffer
+     */
+    public function setBuffer($arBuffer)
+    {
+        $this->arBuffer = json_decode($arBuffer, true);
     }
 
     /**
      * @param $value
      * @return mixed
      */
-    public function getIblockIdByCode($value) {
+    public function getIblockIdByCode($value)
+    {
         $dbResult = CIBlock::GetList([], ['SITE_ID' => SITE_ID, 'CODE' => $value], true);
         if ($arResult = $dbResult->Fetch()) {
             return $arResult['ID'];

@@ -120,6 +120,17 @@ class MigrationsManager {
                 'IS_SEARCHABLE' => 'N'
             ];
 
+            $fields[] = [
+                'ENTITY_ID'     => 'HLBLOCK_' . $highLoadBlockId,
+                'FIELD_NAME'    => 'UF_BUFFER',
+                'USER_TYPE_ID'  => 'string',
+                'XML_ID'        => 'UF_BUFFER',
+                'MULTIPLE'      => 'N',
+                'MANDATORY'     => 'Y',
+                'SHOW_FILTER'   => 'N',
+                'IS_SEARCHABLE' => 'N'
+            ];
+
             foreach ($fields as $field) {
                 $userTypeEntity->Add($field);
             }
