@@ -8,8 +8,7 @@ use CIBlock;
  * Class Migration
  * @package Izica
  */
-class Migration
-{
+class Migration {
     /**
      * @var array
      */
@@ -19,8 +18,7 @@ class Migration
      * @param $message
      * @param string $code
      */
-    public function log($message, $code = 'MIGRATION_LOG')
-    {
+    public function log($message, $code = 'MIGRATION_LOG') {
         MigrationLog::add($code, $message);
     }
 
@@ -28,8 +26,7 @@ class Migration
      * @param $key
      * @param $value
      */
-    public function set($key, $value)
-    {
+    public function set($key, $value) {
         $this->arBuffer[$key] = json_encode($value);
     }
 
@@ -37,38 +34,38 @@ class Migration
      * @param $key
      * @return mixed
      */
-    public function get($key)
-    {
+    public function get($key) {
+        if (!isset($this->arBuffer[$key])) {
+            MigrationLog::add('BUFFER_DATA_NOT_FOUND', 'Migration buffer data not found by key:' . $key);
+            return false;
+        }
         return json_decode($this->arBuffer[$key], true);
     }
 
     /**
      * @return false|string
      */
-    public function getBuffer()
-    {
+    public function getBuffer() {
         return json_encode($this->arBuffer);
     }
 
     /**
      * @param $arBuffer
      */
-    public function setBuffer($arBuffer)
-    {
+    public function setBuffer($arBuffer) {
         $this->arBuffer = json_decode($arBuffer, true);
     }
 
     /**
-     * @param $value
+     * @param $code
      * @return mixed
      */
-    public function getIblockIdByCode($value)
-    {
-        $dbResult = CIBlock::GetList([], ['SITE_ID' => SITE_ID, 'CODE' => $value], true);
+    public function getIblockIdByCode($code) {
+        $dbResult = CIBlock::GetList([], ['SITE_ID' => SITE_ID, 'CODE' => $code], true);
         if ($arResult = $dbResult->Fetch()) {
             return $arResult['ID'];
         } else {
-            MigrationLog::add('IBLOCK_CODE_NOT_FOUND', $value);
+            MigrationLog::add('IBLOCK_CODE_NOT_FOUND', $code);
             MigrationLog::show(true);
         }
     }

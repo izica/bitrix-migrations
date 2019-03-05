@@ -29,7 +29,6 @@ php php_interface/vendor/izica/bitrix-migrations/bxm.php init --root=../
 php vendor/izica/bitrix-migrations/bxm.php init --root=../../
 ```
 
-
 ## Миграции
 ### Команды
 Для просмотра всех доступных команд наберите
@@ -52,121 +51,81 @@ php bxm create create-news-iblock
 ```
 также доступны шаблоны
 ```
-php bxm create create-news-iblock {templateName}
-php bxm create create-news-iblock iblock
+php bxm create create-iblock-news --template={templateName}
+php bxm create create-iblock-news --template=iblock
 ```
-### Доступные шаблоны
-* iblock_type
-* iblock
-* iblock_property
-* url_rewrite
+### Шаблоны
+Библиотека имеет список встроенных шаблонов.
+```markdown
+* default - пустой шаблон
+* iblocktype - создание типа инфоблока
+* iblock - создание инфоблока
+* iblock-property - создание свойства инфоблока
+* iblock-catalog - создание каталога(инфоблока типа Торговый каталог)
+```
+
+Для создания собственных шаблонов их можно размещать в соседнюю с миграциями папку "template".
 
 ### Пример Миграции
 ```php
 <?php
-class CreateNewsIblock extends MigrationTemplate
-{
-    public function up(){
-        $this->iblock->create([
-            'NAME' => 'Новости',
-            'CODE' => 'news',
-            'IBLOCK_TYPE_ID' => 'information',
-            'CODE_TRANSLIT' => true
-        ]);
+
+use Izica\Migration;
+use CModule;
+
+class CreateIblockNews_1550830432 extends Migration {
+    public function up() {
+        CModule::IncludeModule('iblock');
+
+        $obIblock = new CIBlock;
+        $arFields = [
+            "ACTIVE"           => 'Y',
+            "NAME"             => 'Новости',
+            "CODE"             => 'news',
+            "IBLOCK_TYPE_ID"   => 'info',
+            "SITE_ID"          => ["s1"],
+            "GROUP_ID"         => ["2" => "D", "3" => "R"]
+        ];
+
+        $nId = $obIblock->Add($arFields);
+        
+        $this->log('CIBlock news created');
     }
 
-    public function down(){
-        $this->iblock->delete('news');
+    public function down() {
+        CModule::IncludeModule('iblock');
+
+        CIBlock::Delete($this->getIblockIdByCode('news'));
+
+        $this->log('CIBlock news deleted');
     }
 }
 ```
+### Дополнительные функции класса Migration
+* log($message, $code) - вывод сообщения в консоль в процесса миграции
+* set($key, $value) - сохранение данных в буфер миграции, удобно использовать например при создании свойств инфоблока.
+* get($key) - получить данные из буфера.
+* getIblockIdByCode($code) - получить ID инфоблока по его коду
 
-### Доступные обертки
-- [x] iblock_type
-- [x] iblock
-- [x] url_rewrite
-- [X] iblock_element_property
-- [X] iblock_section_property
-- [x] iblock_form
+```php
+<?
+class Example extends Migration {
+    public function up() {
+        /*
+         * тут создается свойсво
+         */
+        $nPropertyId = $obProperty->Add($arFields);
+        $this->set('PROPERTY_CODE', $nPropertyId);
+        $this->log('CIBlock news created');
+    }
 
-## Обертки и параметры
-### iblock_type
-* create(array)
-    * ID or CODE(required) - iblock type code
-    * SORT
-    * NAME(required)
-    * NAME_EN
-* delete(CODE)
+    public function down() {
+        CModule::IncludeModule('iblock');
+        
+        $nPropertyId = $this->get('ADDITIONAL_DESCRIPTION');
+        CIBlockProperty::Delete($nPropertyId);
 
-### iblock
-* create(array)
-    * NAME(required)
-    * CODE(required)
-    * IBLOCK_TYPE_CODE(or IBLOCK_TYPE_ID)(required)
-    * CODE_TRANSLIT - required, unique, translit
-    * LIST_PAGE_URL
-    * DETAIL_PAGE_URL
-    * ACTIVE
-    * SITE_ID
-    * SORT       
-    * GROUP_ID
-* update(code, array)
-* delete(code)
-* setCodeUnique(code)
-* setCodeTransliteration(code)
-* setCodeTransliteration(code)
-
-### iblock_element_property
-* create(iblock_code, array)
-    * NAME(required)
-    * CODE(required)
-    * ACTIVE(Y | N)
-    * SORT      
-    * TYPE(STRING | LIST | FILE | RELATION(привязка к элементу))
-    * MULTIPLE(Y | N)
-    * REQUIRED(Y | N)
-    * DESCRIPTION(Y | N)
-    * LINK_IBLOCK_CODE - для типа RELATION
-    * VALUES - массив для типа LIST
-        * VALUE
-        * DEF(Y | N)
-        * SORT
-* update(iblock_code, code, array)
-* delete(iblock_code, code)
-    * IBLOCK_CODE(required)
-    * CODE(required)
-
-### iblock_section_property
-* create(iblock_code, array)
-    * NAME(required)
-    * CODE(required)
-    * TYPE(STRING)
-* delete(iblock_code, code)
-    * IBLOCK_CODE(required)
-    * CODE(required)
-
-### iblock_form
-* element() - default
-* section() - set settings for sections
-* set(iblock_code, array)
-    * tabs
-    	* rows
-
+        $this->log('Property PROPERTY_CODE deleted');
+    }
+}
 ```
-$this->iblock_form->section()->set($sIblockCode, [
-    'Раздел' => [
-        'Название' => 'NAME',
-        'Название(Англ)' => 'UF_MENU_NAME_EN',
-    ],
-]);
-```
-
-### url_rewrite
-* create(array)
-    * CONDITION (required)
-    * SITE_ID
-    * PATH
-    * RULE
-* delete(array)
-    * CONDITION (required)
-    * SITE_ID

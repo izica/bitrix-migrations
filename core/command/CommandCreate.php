@@ -41,6 +41,7 @@ class CommandCreate extends Command {
             }
         }
         if (!isset($arResult['--template'])) {
+            MigrationLog::add('TEMPLATE_PARAM_NOT_FOUND', "Cant find --template. Template = default.");
             $arResult['--template'] = 'default';
         }
         return $arResult;
@@ -52,7 +53,7 @@ class CommandCreate extends Command {
             MigrationLog::show(true);
         }
         $sName = preg_replace('/[^\w]/', ' ', $argv[2]);
-        $sName = ucwords($sName) . $this->nTime;
+        $sName = ucwords($sName) . '_' . $this->nTime;
         return str_replace(' ', '', $sName);
     }
 }
