@@ -39,7 +39,6 @@ class MigrationLog {
         $s = trim($s);
         $s = strtr($s, $letters);
         $s = strtr($s, $lettersUpper);
-        $s = ucfirst($s);
         return $s;
     }
 }

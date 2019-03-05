@@ -14,7 +14,7 @@ class __NAME__ extends Migration {
             "CODE"             => 'news',
             "IBLOCK_TYPE_ID"   => 'info',
             "SITE_ID"          => ["s1"],
-            "GROUP_ID"         => ["2" => "D", "3" => "R"]
+            "GROUP_ID"         => ["2" => "R"]
         ];
 
         $nId = $obIblock->Add($arFields);

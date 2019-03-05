@@ -61,7 +61,12 @@ class Migration {
      * @return mixed
      */
     public function getIblockIdByCode($code) {
-        $dbResult = CIBlock::GetList([], ['SITE_ID' => SITE_ID, 'CODE' => $code], true);
+        $arFilter = [
+            "CHECK_PERMISSIONS" => "N",
+            'CODE' => $code
+        ];
+
+        $dbResult = CIBlock::GetList([], $arFilter, true);
         if ($arResult = $dbResult->Fetch()) {
             return $arResult['ID'];
         } else {
