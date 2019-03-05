@@ -123,7 +123,7 @@ class Example extends Migration {
     public function down() {
         CModule::IncludeModule('iblock');
         
-        $nPropertyId = $this->get('ADDITIONAL_DESCRIPTION');
+        $nPropertyId = $this->get('PROPERTY_CODE');
         CIBlockProperty::Delete($nPropertyId);
 
         $this->log('Property PROPERTY_CODE deleted');
