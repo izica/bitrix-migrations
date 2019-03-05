@@ -8,7 +8,6 @@ class CommandInit extends Command {
 
     public function execute($arArguments) {
         $arParams = $this->getParams($arArguments);
-        print_r($arParams);
         $arParams['--root'] = $this->getDocumentRoot($arParams['--root']);
 
         $this->createMigrationsDirectories($arParams);
