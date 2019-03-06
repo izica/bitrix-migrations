@@ -10,7 +10,7 @@ class MigrationLog {
     }
 
     public static function add($sCode, $sMessage) {
-        self::$arItems[] = '[' . $sCode . '] ' . self::translit($sMessage);
+        self::$arItems[] = "\e[0;32m[" . $sCode . "]\e[0m " . self::translit($sMessage);
         return self::class;
     }
 
