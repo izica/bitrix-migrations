@@ -64,7 +64,7 @@ class CommandRollback extends Command
     {
         require_once 'migration/' . $this->arMigration['filename'];
         $class = new $this->arMigration['classname']();
-        $class->setBuffer($arMigration['buffer']);
+        $class->setBuffer($this->arMigration['buffer']);
         $class->down();
     }
 }
