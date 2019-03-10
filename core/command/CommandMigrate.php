@@ -83,6 +83,7 @@ class CommandMigrate extends Command
             require_once 'migration/' . $arMigration['filename'];
             $arMigration['classObject'] = new $arMigration['classname']();
             $arMigration['classObject']->up();
+            $arMigration['classObject']->seed();
             $this->remember($arMigration);
         }
     }
