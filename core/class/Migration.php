@@ -36,7 +36,9 @@ class Migration {
      */
     public function get($key) {
         if (!isset($this->arBuffer[$key])) {
+            print_r($this->arBuffer);
             MigrationLog::add('BUFFER_DATA_NOT_FOUND', 'Migration buffer data not found by key:' . $key);
+            MigrationLog::show(true);
             return false;
         }
         return json_decode($this->arBuffer[$key], true);
