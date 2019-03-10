@@ -15,6 +15,27 @@ class Migration {
     public $arBuffer = [];
 
     /**
+     *
+     */
+    public function up(){
+
+    }
+
+    /**
+     *
+     */
+    public function down(){
+
+    }
+
+    /**
+     *
+     */
+    public function seed(){
+
+    }
+
+    /**
      * @param $message
      * @param string $code
      */
