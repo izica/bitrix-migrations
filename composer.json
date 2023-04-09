@@ -1,12 +1,6 @@
 {
     "name": "izica/bitrix-migrations",
     "description": "CMS Bitrix migrations",
-    "authors": [
-        {
-            "name": "Golovarchuk Artyom",
-            "email": "artemiztomska@gmail.com"
-        }
-    ],
     "keywords": ["bitrix", "cms", "migration", "migrations", "1cbitrix"],
     "license": "MIT",
     "require": {
